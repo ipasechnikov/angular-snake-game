@@ -1,0 +1,13 @@
+<ng-container *ngFor="let boardRow of boardService.getBoardRows()">
+  <div
+    class="board-row"
+    [style.height]="boardRowHeight"
+  >
+    <app-board-square
+      *ngFor="let boardSquare of boardRow"
+      [model]="boardSquare"
+      [redraw$]="boardService.getSquareRedrawEvents(boardSquare)"
+      class="board-square"
+    ></app-board-square>
+  </div>
+</ng-container>

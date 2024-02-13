@@ -1,0 +1,13 @@
+:host {
+  display: block;
+}
+
+.board-row {
+  display: flex;
+}
+
+.board-square {
+  width: 100%;
+  height: 100%;
+  border: solid darkgray 0.1px;
+}

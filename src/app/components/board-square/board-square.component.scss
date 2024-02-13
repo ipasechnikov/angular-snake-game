@@ -1,0 +1,24 @@
+:host {
+  display: block;
+}
+
+.board-square {
+  width: 100%;
+  height: 100%;
+}
+
+.board-square--snake-head {
+  background-color: red;
+}
+
+.board-square--snake-body {
+  background-color: black;
+}
+
+.board-square--food {
+  background-color: green;
+}
+
+.board-square--empty {
+  background-color: gray;
+}
