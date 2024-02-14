@@ -1,8 +1,23 @@
 :host {
-  display: block;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+@media screen and (orientation:portrait) {
+  app-board {
+    width: 100%;
+  }
+}
+
+@media screen and (orientation:landscape) {
+  app-board {
+    height: 100%;
+  }
 }
 
 app-board {
-  width: 500px;
-  height: 500px;
+  aspect-ratio: 1 / 1;
 }
