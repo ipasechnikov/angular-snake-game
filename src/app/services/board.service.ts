@@ -14,13 +14,11 @@ export class BoardService implements GameObjectService {
   public readonly boardHeight: number = 32;
 
   private readonly board: Board = new Board(this.boardWidth, this.boardHeight);
-  private readonly boardSquareRedrawQueue: BoardSquare[] = [];
+  private readonly boardSquareRedrawQueue: Map<number, BoardSquare> = new Map<number, BoardSquare>();
   private readonly boardSquareRedrawSubjects: Map<BoardSquare, Subject<void>> = new Map<BoardSquare, Subject<void>>();
 
-  constructor() { }
-
   init(): void {
-    for (const boardRow of this.board.squares) {
+    for (const boardRow of this.board.getRows()) {
       for (const boardSquare of boardRow) {
         this.boardSquareRedrawSubjects.set(boardSquare, new Subject<void>());
       }
@@ -31,8 +29,8 @@ export class BoardService implements GameObjectService {
     this.redrawBoardSquares();
   }
 
-  getBoardRows(): BoardSquare[][] {
-    return this.board.squares;
+  getRows(): BoardSquare[][] {
+    return this.board.getRows();
   }
 
   getSquareRedrawEvents(boardSquare: BoardSquare): Observable<void> {
@@ -40,27 +38,41 @@ export class BoardService implements GameObjectService {
   }
 
   setSquareType(x: number, y: number, type: BoardSquareType): void {
-    const boardSquare = this.board.squares[y][x];
-    boardSquare.type = type;
-    this.addToRedrawQueue(boardSquare);
+    const oldBoardSquare = this.board.getSquare(x, y);
+    const newBoardSquare = { ...oldBoardSquare, type };
+    this.addToRedrawQueue(newBoardSquare);
+  }
+
+  private getSquareKey(boardSquare: BoardSquare): number {
+    return boardSquare.y * this.boardWidth + boardSquare.x;
   }
 
   private addToRedrawQueue(boardSquare: BoardSquare): void {
-    this.boardSquareRedrawQueue.push(boardSquare);
+    const boardSquareKey = this.getSquareKey(boardSquare);
+    this.boardSquareRedrawQueue.set(boardSquareKey, boardSquare);
+  }
+
+  private consolidateRedrawQueue(): void {
+
   }
 
   private clearRedrawQueue(): void {
-    this.boardSquareRedrawQueue.length = 0;
+    this.boardSquareRedrawQueue.clear();
   }
 
   private redrawBoardSquares(): void {
-    if (this.boardSquareRedrawQueue.length === 0) {
+    if (this.boardSquareRedrawQueue.size === 0) {
       return;
     }
 
-    for (const boardSquare of this.boardSquareRedrawQueue) {
-      this.redrawBoardSquare(boardSquare);
+    for (const newBoardSquare of this.boardSquareRedrawQueue.values()) {
+      const oldBoardSquare = this.board.getSquare(newBoardSquare.x, newBoardSquare.y);
+      if (oldBoardSquare.type !== newBoardSquare.type) {
+        oldBoardSquare.type = newBoardSquare.type;
+        this.redrawBoardSquare(oldBoardSquare);
+      }
     }
+
     this.clearRedrawQueue();
   }
 
