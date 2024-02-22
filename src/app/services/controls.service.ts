@@ -30,24 +30,24 @@ export class ControlsService implements GameObjectService, OnDestroy {
   }
 
   private onKeyDown(event: KeyboardEvent): void {
-    const controlEvent = this.mapKeyCodeToControlEvent(event.key);
+    const controlEvent = this.mapKeyCodeToControlEvent(event.code);
     if (controlEvent !== undefined) {
       this.controlEventsSubject.next(controlEvent);
     }
   }
 
-  private mapKeyCodeToControlEvent(key: string): ControlEvent | undefined {
-    switch (key) {
-      case 'w':
+  private mapKeyCodeToControlEvent(code: string): ControlEvent | undefined {
+    switch (code) {
+      case 'KeyW':
       case 'ArrowUp':
         return ControlEvent.Up;
-      case 's':
+      case 'KeyS':
       case 'ArrowDown':
         return ControlEvent.Down;
-      case 'a':
+      case 'KeyA':
       case 'ArrowLeft':
         return ControlEvent.Left;
-      case 'd':
+      case 'KeyD':
       case 'ArrowRight':
         return ControlEvent.Right;
       default:

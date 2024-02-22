@@ -15,7 +15,7 @@ import { GameObjectService } from './game-object.service';
 export class SnakeService implements GameObjectService, OnDestroy {
 
   private readonly defaultDirection = SnakeDirection.Up;
-  private readonly defaultSpeed = 5;
+  private readonly defaultSpeed = 10;
   private readonly defaultLength = 3;
   private readonly snake: Snake = this.initSnake();
 
@@ -110,10 +110,10 @@ export class SnakeService implements GameObjectService, OnDestroy {
     const steps = Math.floor(this.snake.speed * this.timeElapsed / 1000);
     if (steps > 0) {
       this.timeElapsed = 0;
+      this.handleControls();
     }
 
     for (let i = 0; i < steps; i++) {
-      this.handleControls();
       this.stepParts();
       this.detectCollisions();
     }
