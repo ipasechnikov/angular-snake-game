@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { BoardService } from './board.service';
-import { ControlsService } from './controls.service';
+import { CONTROLS_SERVICE_TOKEN, ControlsService } from './controls/controls.service';
 import { GameObjectService } from './game-object.service';
 import { SnakeService } from './snake.service';
 
@@ -15,7 +15,7 @@ export class GameLoopService {
   constructor(
     boardService: BoardService,
     snakeService: SnakeService,
-    controlService: ControlsService,
+    @Inject(CONTROLS_SERVICE_TOKEN) controlService: ControlsService,
   ) {
     this.gameObjects.push(
       boardService,
