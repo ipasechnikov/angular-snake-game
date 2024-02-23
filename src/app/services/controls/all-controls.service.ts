@@ -1,11 +1,13 @@
+import { Injectable } from "@angular/core";
 import { merge, takeUntil, tap } from "rxjs";
 import { ControlsServiceBase } from "./controls-base.service";
 import { ControlsService } from "./controls.service";
 import { KeyboardControlsService } from "./keyboard-controls.service";
 import { TouchControlsService } from "./touch-controls.service";
-import { Injectable } from "@angular/core";
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class AllControlsService extends ControlsServiceBase {
 
   private readonly controls: ControlsService[] = [];

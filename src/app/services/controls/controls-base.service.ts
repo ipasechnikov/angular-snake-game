@@ -3,7 +3,9 @@ import { Observable, Subject } from "rxjs";
 import { ControlEvent } from "../../enums/control-event.enum";
 import { ControlsService } from "./controls.service";
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export abstract class ControlsServiceBase implements ControlsService, OnDestroy {
 
   protected readonly unsubscribe$: Subject<void> = new Subject<void>();
