@@ -3,6 +3,7 @@ import { Subject, takeUntil, tap } from 'rxjs';
 import { BoardSquareType } from '../../enums/board-square-type.enum';
 import { ControlEvent } from '../../enums/control-event.enum';
 import { SnakeDirection } from '../../enums/snake-direction.enum';
+import { BoardSquare } from '../../models/board-square.model';
 import { SnakePart } from '../../models/snake-part.model';
 import { Snake } from '../../models/snake.model';
 import { CONTROLS_SERVICE_TOKEN, ControlsService } from '../controls/controls.service';
@@ -15,8 +16,9 @@ import { GameObjectService } from './game-object.service';
 export class SnakeService implements GameObjectService, OnDestroy {
 
   private readonly defaultDirection = SnakeDirection.Up;
-  private readonly defaultSpeed = 10;
+  private readonly defaultSpeed = 7;
   private readonly defaultLength = 3;
+  private readonly defaultGrowth = 1;
   private readonly snake: Snake = this.initSnake();
 
   private readonly isBodyCollisionEnabled: boolean = false;
@@ -86,22 +88,34 @@ export class SnakeService implements GameObjectService, OnDestroy {
       tailPart.y = prevPart.y;
     }
 
-    const headPart = this.snake.parts[0];
+    const head = this.snake.parts[0];
     switch (this.snake.direction) {
       case SnakeDirection.Up:
-        headPart.y--;
+        head.y--;
         break;
       case SnakeDirection.Down:
-        headPart.y++;
+        head.y++;
         break;
       case SnakeDirection.Left:
-        headPart.x--;
+        head.x--;
         break;
       case SnakeDirection.Right:
-        headPart.x++;
+        head.x++;
         break;
       default:
         throw new Error(`Unexpected direction value: ${this.snake.direction}`);
+    }
+
+    if (head.x < 0) {
+      head.x = this.boardService.boardWidth - 1;
+    } else if (head.x >= this.boardService.boardWidth) {
+      head.x = 0;
+    }
+
+    if (head.y < 0) {
+      head.y = this.boardService.boardHeight - 1;
+    } else if (head.y >= this.boardService.boardHeight) {
+      head.y = 0;
     }
   }
 
@@ -114,8 +128,9 @@ export class SnakeService implements GameObjectService, OnDestroy {
     }
 
     for (let i = 0; i < steps; i++) {
+      const lookAheadSquare = this.lookAheadSquare();
+      this.detectCollisions(lookAheadSquare);
       this.stepParts();
-      this.detectCollisions();
     }
   }
 
@@ -139,44 +154,38 @@ export class SnakeService implements GameObjectService, OnDestroy {
     }
   }
 
-  private detectCollisions(): void {
-    this.detectWallCollision();
-    this.detectBodyCollision();
-    this.detectFoodCollision();
+  private detectCollisions(lookAheadSquare: BoardSquare): void {
+    this.detectWallCollision(lookAheadSquare);
+    this.detectBodyCollision(lookAheadSquare);
+    this.detectFoodCollision(lookAheadSquare);
   }
 
-  private detectWallCollision(): void {
-    if (this.isWallCollisionEnabled) {
-      // TODO
-    } else {
-      this.teleportSnake();
+  private detectWallCollision(lookAheadSquare: BoardSquare): void {
+    if (!this.isWallCollisionEnabled) {
+      return;
     }
   }
 
-  private teleportSnake(): void {
-    const head = this.snake.parts[0];
-
-    if (head.x < 0) {
-      head.x += this.boardService.boardWidth;
-    } else if (head.x >= this.boardService.boardWidth) {
-      head.x -= this.boardService.boardWidth;
-    }
-
-    if (head.y < 0) {
-      head.y += this.boardService.boardHeight;
-    } else if (head.y >= this.boardService.boardHeight) {
-      head.y -= this.boardService.boardHeight;
+  private detectBodyCollision(lookAheadSquare: BoardSquare): void {
+    if (!this.isBodyCollisionEnabled) {
+      return;
     }
   }
 
-  private detectBodyCollision(): void {
-    if (this.isBodyCollisionEnabled) {
-      // TODO
+  private detectFoodCollision(lookAheadSquare: BoardSquare): void {
+    if (lookAheadSquare.type === BoardSquareType.Food) {
+      this.grow();
     }
   }
 
-  private detectFoodCollision(): void {
-    // TODO
+  private grow() {
+    const tail = this.snake.parts[this.snake.parts.length - 1];
+    for (let i = 0; i < this.defaultGrowth; i++) {
+      this.snake.parts.push({
+        x: tail.x,
+        y: tail.y,
+      });
+    }
   }
 
   private handleControls(): void {
@@ -212,6 +221,55 @@ export class SnakeService implements GameObjectService, OnDestroy {
 
   private handleControlEvent(controlEvent: ControlEvent): void {
     this.nextControlEvent ??= controlEvent;
+  }
+
+  private lookAheadSquare(): BoardSquare {
+    const head = this.snake.parts[0];
+    let lookAheadX = head.x;
+    let lookAheadY = head.y;
+
+    switch (this.snake.direction) {
+      case SnakeDirection.Up:
+        lookAheadY--;
+        break;
+      case SnakeDirection.Down:
+        lookAheadY++;
+        break;
+      case SnakeDirection.Left:
+        lookAheadX--;
+        break;
+      case SnakeDirection.Right:
+        lookAheadX++;
+        break;
+      default:
+        throw new Error(`Unexpected direction value: ${this.snake.direction}`);
+    }
+
+    if (lookAheadX >= this.boardService.boardWidth) {
+      lookAheadX = this.isWallCollisionEnabled ? -1 : 0;
+    } else if (lookAheadX < 0) {
+      lookAheadX = this.isWallCollisionEnabled
+        ? -1
+        : this.boardService.boardWidth - 1;
+    }
+
+    if (lookAheadY >= this.boardService.boardHeight) {
+      lookAheadY = this.isWallCollisionEnabled ? -1 : 0;
+    } else if (lookAheadY < 0) {
+      lookAheadY = this.isWallCollisionEnabled
+        ? -1
+        : this.boardService.boardHeight - 1;
+    }
+
+    if (lookAheadX === -1 || lookAheadY === -1) {
+      return {
+        x: -1,
+        y: -1,
+        type: BoardSquareType.Wall,
+      };
+    }
+
+    return this.boardService.getSquare(lookAheadX, lookAheadY);
   }
 
 }

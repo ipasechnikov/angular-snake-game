@@ -1,5 +1,5 @@
 export enum BoardSquareType {
 
-  SnakeHead, SnakeBody, Food, Empty
+  SnakeHead, SnakeBody, Food, Wall, Empty
 
 }
