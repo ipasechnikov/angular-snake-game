@@ -1,12 +1,12 @@
 import { Inject, Injectable, OnDestroy } from '@angular/core';
 import { Subject, takeUntil, tap } from 'rxjs';
-import { BoardSquareType } from '../enums/board-square-type.enum';
-import { ControlEvent } from '../enums/control-event.enum';
-import { SnakeDirection } from '../enums/snake-direction.enum';
-import { SnakePart } from '../models/snake-part.model';
-import { Snake } from '../models/snake.model';
+import { BoardSquareType } from '../../enums/board-square-type.enum';
+import { ControlEvent } from '../../enums/control-event.enum';
+import { SnakeDirection } from '../../enums/snake-direction.enum';
+import { SnakePart } from '../../models/snake-part.model';
+import { Snake } from '../../models/snake.model';
+import { CONTROLS_SERVICE_TOKEN, ControlsService } from '../controls/controls.service';
 import { BoardService } from './board.service';
-import { CONTROLS_SERVICE_TOKEN, ControlsService } from './controls/controls.service';
 import { GameObjectService } from './game-object.service';
 
 @Injectable({

@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { BoardService } from '../../services/board.service';
+import { BoardService } from '../../services/game-objects/board.service';
 import { BoardSquareComponent } from '../board-square/board-square.component';
 
 @Component({

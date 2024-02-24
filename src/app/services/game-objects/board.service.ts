@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subject, of } from 'rxjs';
-import { BoardSquareType } from '../enums/board-square-type.enum';
-import { BoardSquare } from '../models/board-square.model';
-import { Board } from '../models/board.model';
+import { BoardSquareType } from '../../enums/board-square-type.enum';
+import { BoardSquare } from '../../models/board-square.model';
+import { Board } from '../../models/board.model';
 import { GameObjectService } from './game-object.service';
 
 @Injectable({
@@ -33,12 +33,16 @@ export class BoardService implements GameObjectService {
     return this.board.getRows();
   }
 
+  getSquare(x: number, y: number): BoardSquare {
+    return this.board.getSquare(x, y);
+  }
+
   getSquareRedrawEvents(boardSquare: BoardSquare): Observable<void> {
     return this.boardSquareRedrawSubjects.get(boardSquare)?.asObservable() ?? of();
   }
 
   setSquareType(x: number, y: number, type: BoardSquareType): void {
-    const oldBoardSquare = this.board.getSquare(x, y);
+    const oldBoardSquare = this.getSquare(x, y);
     const newBoardSquare = { ...oldBoardSquare, type };
     this.addToRedrawQueue(newBoardSquare);
   }
@@ -52,10 +56,6 @@ export class BoardService implements GameObjectService {
     this.boardSquareRedrawQueue.set(boardSquareKey, boardSquare);
   }
 
-  private consolidateRedrawQueue(): void {
-
-  }
-
   private clearRedrawQueue(): void {
     this.boardSquareRedrawQueue.clear();
   }
@@ -66,7 +66,7 @@ export class BoardService implements GameObjectService {
     }
 
     for (const newBoardSquare of this.boardSquareRedrawQueue.values()) {
-      const oldBoardSquare = this.board.getSquare(newBoardSquare.x, newBoardSquare.y);
+      const oldBoardSquare = this.getSquare(newBoardSquare.x, newBoardSquare.y);
       if (oldBoardSquare.type !== newBoardSquare.type) {
         oldBoardSquare.type = newBoardSquare.type;
         this.redrawBoardSquare(oldBoardSquare);
