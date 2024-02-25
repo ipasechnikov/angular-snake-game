@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
-import random from "random";
 import { BoardSquareType } from "../../enums/board-square-type.enum";
 import { BoardSquare } from "../../models/board-square.model";
+import { randomInt } from "../../utils/random";
 import { BoardService } from "./board.service";
 import { GameObjectService } from "./game-object.service";
 
@@ -41,8 +41,8 @@ export class FoodService implements GameObjectService {
   }
 
   private getRandomBoardSquare(): BoardSquare {
-    const x = random.int(0, this.boardService.boardWidth - 1);
-    const y = random.int(0, this.boardService.boardHeight - 1);
+    const x = randomInt(0, this.boardService.boardWidth);
+    const y = randomInt(0, this.boardService.boardHeight);
     return this.boardService.getSquare(x, y);
   }
 
