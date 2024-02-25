@@ -38,6 +38,8 @@ export class KeyboardControlsService extends ControlsServiceBase {
       case 'KeyD':
       case 'ArrowRight':
         return ControlEvent.Right;
+      case 'Space':
+        return ControlEvent.PlayPauseGame;
       default:
         return undefined;
     }

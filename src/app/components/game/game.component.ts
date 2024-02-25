@@ -1,6 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { AfterViewInit, ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { Observable, map } from 'rxjs';
+import { GameState } from '../../enums/game-state.enum';
 import { GameLoopService } from '../../services/game-loop.service';
+import { GameService } from '../../services/game-objects/game.service';
 import { BoardComponent } from '../board/board.component';
 
 @Component({
@@ -16,7 +19,16 @@ import { BoardComponent } from '../board/board.component';
 })
 export class GameComponent implements OnInit, AfterViewInit {
 
-  constructor(private readonly gameLoop: GameLoopService) { }
+  protected readonly isPausedOverlayDisplayed$: Observable<boolean>;
+
+  constructor(
+    gameService: GameService,
+    private readonly gameLoop: GameLoopService,
+  ) {
+    this.isPausedOverlayDisplayed$ = gameService.stateChanged$.pipe(
+      map(state => state === GameState.Pause),
+    );
+  }
 
   ngOnInit(): void {
     this.gameLoop.init();

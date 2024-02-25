@@ -1,4 +1,10 @@
 :host {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.game-container {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -6,18 +12,48 @@
   height: 100%;
 }
 
+.board-container {
+  position: relative;
+  aspect-ratio: 1 / 1;
+}
+
+.pause-overlay {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.pause-text {
+  color: white;
+}
+
 @media screen and (orientation:portrait) {
-  app-board {
+  .board-container {
     width: 100%;
+  }
+
+  .pause-text {
+    font-size: 10vw;
   }
 }
 
 @media screen and (orientation:landscape) {
-  app-board {
+  .board-container {
     height: 100%;
+  }
+
+  .pause-text {
+    font-size: 10vh;
   }
 }
 
 app-board {
-  aspect-ratio: 1 / 1;
+  width: 100%;
+  height: 100%;
 }

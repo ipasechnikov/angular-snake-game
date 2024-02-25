@@ -178,7 +178,7 @@ export class SnakeService implements GameObjectService, OnDestroy {
     }
   }
 
-  private grow() {
+  private grow(): void {
     const tail = this.snake.parts[this.snake.parts.length - 1];
     for (let i = 0; i < this.defaultGrowth; i++) {
       this.snake.parts.push({

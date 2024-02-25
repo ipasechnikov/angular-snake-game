@@ -1,1 +1,8 @@
-<app-board></app-board>
+<div class="game-container">
+  <div class="board-container">
+    <app-board></app-board>
+    <div *ngIf="isPausedOverlayDisplayed$ | async" class="pause-overlay">
+      <span class="pause-text">PAUSE</span>
+    </div>
+  </div>
+</div>

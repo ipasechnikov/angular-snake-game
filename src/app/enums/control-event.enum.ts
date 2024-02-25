@@ -1,5 +1,5 @@
 export enum ControlEvent {
 
-  Up, Down, Left, Right
+  Up, Down, Left, Right, PlayPauseGame,
 
 }

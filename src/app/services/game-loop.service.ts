@@ -1,8 +1,10 @@
 import { Inject, Injectable } from '@angular/core';
+import { GameState } from '../enums/game-state.enum';
 import { CONTROLS_SERVICE_TOKEN, ControlsService } from './controls/controls.service';
 import { BoardService } from './game-objects/board.service';
 import { FoodService } from './game-objects/food.service';
 import { GameObjectService } from './game-objects/game-object.service';
+import { GameService } from './game-objects/game.service';
 import { SnakeService } from './game-objects/snake.service';
 
 @Injectable({
@@ -18,8 +20,10 @@ export class GameLoopService {
     snakeService: SnakeService,
     foodService: FoodService,
     @Inject(CONTROLS_SERVICE_TOKEN) controlService: ControlsService,
+    private readonly gameService: GameService,
   ) {
     this.gameObjects.push(
+      gameService,
       boardService,
       snakeService,
       foodService,
@@ -42,7 +46,9 @@ export class GameLoopService {
     const deltaTime = timestamp - this.lastFrameTime;
     this.lastFrameTime = timestamp;
 
-    this.update(deltaTime);
+    if (this.gameService.getState() === GameState.Play) {
+      this.update(deltaTime);
+    }
 
     requestAnimationFrame(t => this.gameLoop(t))
   }
