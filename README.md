@@ -1,27 +1,49 @@
-# AngularSnakeGame
+# Angular Snake Game
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.1.2.
+This is my attempt to create a very basic snake game fully in Angular 2 (Angular 17).
 
-## Development server
+The games is implemented simply with Angular components, no fancy Canvas API, WebGL or anything. Basically you can
+think of it as a normal SPA that manipulates DOM.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+Please note, that I created it more as a proof of concept in my free time after work to experiment and get more practice with Angular. This is in no way an actual completed game and probably will never be.
 
-## Code scaffolding
+## Playable demo in your browser
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+The latest version of the game is deployed to GitHub Pages and you are very welcome to take a look at it over [here](https://ipasechnikov.github.io/angular-snake-game/).
 
-## Build
+Game's layout and controls are optimized both for desktop and mobile devices.
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+## Game controls
 
-## Running unit tests
+There are 2 different sets of controls depending whether you are on desktop or mobile.
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+### Desktop
 
-## Running end-to-end tests
+| Action   | Controls           |
+| -------- | ------------------ |
+| Movement | WASD or arrow keys |
+| Pause    | Space              |
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+### Mobile
 
-## Further help
+| Action   | Controls |
+| -------- | -------- |
+| Movement | Swipe    |
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+## Build and run
+
+Being a standard Angular app, the same well-established build and run process is used. Just run the following command to start dev server:
+
+```shell
+npm run start
+```
+
+Navigate to `http://localhost:4200/` where you can find and play the game.
+
+## TODO
+
+A list of features I would like to implement in the future. Again, I am not sure if I ever will implement them. So I guess it is mostly some sort of a note or reminder to myself in case I will decide to continue my work on it.
+
+- [ ] Snake collision detection with its own body
+- [ ] Score counter
+- [ ] Dynamic and manual speed adjustment
